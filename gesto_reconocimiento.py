@@ -36,17 +36,15 @@ with mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7) a
             index_tip = landmarks_list[8]  # Punta del dedo índice
 
             # 2. Gesto: Paz (✌️)
-            # Compara el índice (8) y el medio (12) estando extendidos
             index_tip = landmarks_list[8]
             middle_tip = landmarks_list[12]
 
             # 3. Gesto: Dedo índice (🖐️)
-            # Solo el índice extendido, el resto de los dedos doblados
             thumb_tip = landmarks_list[4]
             middle_tip = landmarks_list[12]
             ring_tip = landmarks_list[16]
             pinky_tip = landmarks_list[20]
-            
+
             # 4. Gesto: Puño cerrado
             # Verifica si los dedos están doblados (las puntas están cerca de la muñeca)
             if (landmarks_list[4][1] > landmarks_list[3][1] and  # Pulgar
@@ -54,19 +52,28 @@ with mp_hands.Hands(min_detection_confidence=0.7, min_tracking_confidence=0.7) a
                 landmarks_list[12][1] > landmarks_list[11][1] and  # Medio
                 landmarks_list[16][1] > landmarks_list[15][1] and  # Anular
                 landmarks_list[20][1] > landmarks_list[19][1]):  # Meñique
-                cv2.putText(image, 'Gesto: Puño Cerrado', (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.putText(image, 'Gesto: quieres pelea?', (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            
             else:
-                # 1. Prioridad: Gesto de Paz
+                # 5. Gesto de Paz
                 if index_tip[1] < middle_tip[1] and index_tip[0] < middle_tip[0]:
                     cv2.putText(image, 'Gesto: Paz', (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 
-                # 2. Prioridad: Gesto de Pulgar Arriba
+                # 6. Gesto de Pulgar Arriba
                 elif thumb_tip[1] < index_tip[1]:  # Pulgar por encima del índice
-                    cv2.putText(image, 'Gesto: Pulgar Arriba', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    cv2.putText(image, 'Gesto: Ok', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
                 
-                # 3. Gesto de Dedo Índice
+                # 7. Gesto de Dedo Índice
                 elif index_tip[1] < thumb_tip[1]:  # El índice está extendido hacia arriba
-                    cv2.putText(image, 'Gesto: Palma', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                    cv2.putText(image, 'Gesto: Para', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                
+                # 8. Gesto: Dedos Estirados (todos los dedos estirados)
+                elif (landmarks_list[4][1] < landmarks_list[3][1] and  # Pulgar
+                    landmarks_list[8][1] < landmarks_list[7][1] and  # Índice
+                    landmarks_list[12][1] < landmarks_list[11][1] and  # Medio
+                    landmarks_list[16][1] < landmarks_list[15][1] and  # Anular
+                    landmarks_list[20][1] < landmarks_list[19][1]):  # Meñique
+                    cv2.putText(image, 'Gesto: Dedos Estirados', (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Mostrar la imagen con la cámara en tiempo real
         cv2.imshow('Gesto Reconocimiento', image)
